@@ -9,6 +9,8 @@ import subprocess
 import sys
 from pathlib import Path
 
+import template_python
+
 
 def test_main_module_executable():
     """Test that the main module can be executed."""
@@ -25,7 +27,5 @@ def test_main_module_executable():
 
 def test_package_import():
     """Test that the package can be imported successfully."""
-    import template_python
-
     assert hasattr(template_python, "__version__")
     assert template_python.__version__ == "0.1.0"

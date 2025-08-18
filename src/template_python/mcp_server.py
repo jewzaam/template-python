@@ -12,6 +12,8 @@ To enable MCP functionality:
 4. Run `make mcp-cursor` to configure Cursor integration
 """
 
+import logging
+
 # Uncomment these imports when building an MCP server
 # import asyncio
 # import logging
@@ -103,10 +105,11 @@ To enable MCP functionality:
 
 def main() -> None:
     """Placeholder main function for MCP server."""
-    print(
-        "MCP server template - edit src/template_python/mcp_server.py to implement your MCP server",
+    logger = logging.getLogger(__name__)
+    logger.info(
+        "MCP server template - edit src/template_python/mcp_server.py to implement your MCP server"
     )
-    print("See comments in the file for implementation guidance")
+    logger.info("See comments in the file for implementation guidance")
 
 
 if __name__ == "__main__":

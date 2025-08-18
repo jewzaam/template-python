@@ -5,45 +5,43 @@ Tests for mcp_server module.
 Tests both the current placeholder functionality and the expected MCP patterns.
 """
 
-from io import StringIO
-from unittest.mock import patch
+import logging
 
 import pytest
 
+import template_python.mcp_server
 from template_python.mcp_server import main
+
+# Test constants - no longer needed since we switched to logging
 
 
 class TestMCPServerMain:
     """Test cases for the main function."""
 
-    def test_main_prints_template_message(self):
-        """Test that main prints the expected template message."""
-        with patch("sys.stdout", new_callable=StringIO) as mock_stdout:
+    def test_main_prints_template_message(self, caplog):
+        """Test that main logs the expected template message."""
+        with caplog.at_level(logging.INFO):
             main()
-            output = mock_stdout.getvalue()
 
-            assert "MCP server template" in output
-            assert "edit src/template_python/mcp_server.py" in output
-            assert "implementation guidance" in output
+            assert "MCP server template" in caplog.text
+            assert "edit src/template_python/mcp_server.py" in caplog.text
+            assert "implementation guidance" in caplog.text
 
     def test_main_does_not_raise_exception(self):
         """Test that main executes without raising exceptions."""
         # Should not raise any exceptions
         main()
 
-    def test_main_when_called_as_script(self):
+    def test_main_when_called_as_script(self, caplog):
         """Test main function when module is executed as script."""
-        with patch("sys.stdout", new_callable=StringIO) as mock_stdout:
-            # Mock the __name__ == "__main__" execution
-            with patch("template_python.mcp_server.main") as mock_main:
-                # Import and execute the module's main block
+        with caplog.at_level(logging.INFO):
+            # Import and execute the module's main block
+            # The actual execution happens during import,
+            # but we can test the function directly
+            main()
 
-                # The actual execution happens during import,
-                # but we can test the function directly
-                main()
-
-        output = mock_stdout.getvalue()
-        assert "MCP server template" in output
+            assert "MCP server template" in caplog.text
+            assert "edit src/template_python/mcp_server.py" in caplog.text
 
 
 class TestMCPServerFunctionality:
@@ -66,17 +64,14 @@ class TestMCPServerFunctionality:
         except ImportError as e:
             pytest.fail(f"Standard library imports failed: {e}")
 
-    @patch("builtins.print")
-    def test_placeholder_main_output(self, mock_print):
-        """Test that placeholder main produces expected output."""
-        main()
+    def test_placeholder_main_output(self, caplog):
+        """Test that placeholder main produces expected log output."""
+        with caplog.at_level(logging.INFO):
+            main()
 
-        # Verify print was called with expected messages
-        assert mock_print.call_count == 2
-        calls = [call.args[0] for call in mock_print.call_args_list]
-
-        assert any("MCP server template" in call for call in calls)
-        assert any("implementation guidance" in call for call in calls)
+            # Verify expected log messages were recorded
+            assert "MCP server template" in caplog.text
+            assert "implementation guidance" in caplog.text
 
     def test_expected_mcp_tool_schema_structure(self):
         """Test the expected structure for MCP tool schemas."""
@@ -104,7 +99,8 @@ class TestMCPServerFunctionality:
             if name == "example_tool":
                 message = arguments.get("message", "") if arguments else ""
                 return f"You said: {message}"
-            raise ValueError(f"Unknown tool: {name}")
+            error_msg = f"Unknown tool: {name}"
+            raise ValueError(error_msg)
 
         # Test successful tool call
         result = mock_handle_call_tool("example_tool", {"message": "test"})
@@ -149,7 +145,8 @@ class TestMCPServerFunctionality:
             if name == "example_tool":
                 message = arguments.get("message", "") if arguments else ""
                 return f"You said: {message}"
-            raise ValueError(f"Unknown tool: {name}")
+            error_msg = f"Unknown tool: {name}"
+            raise ValueError(error_msg)
 
         # Test the patterns
         tools = await mock_list_tools()
@@ -165,34 +162,27 @@ class TestMCPServerIntegration:
 
     def test_template_provides_complete_mcp_structure(self):
         """Test that the template provides all necessary MCP components."""
-        # Read the file content to verify structure
-        import template_python.mcp_server as mcp_module
-
         # Verify the module has the expected structure
-        assert hasattr(mcp_module, "main")
-        assert callable(mcp_module.main)
+        assert hasattr(template_python.mcp_server, "main")
+        assert callable(template_python.mcp_server.main)
 
         # Verify docstring provides guidance
-        assert mcp_module.__doc__ is not None
-        assert "MCP" in mcp_module.__doc__
-        assert "template" in mcp_module.__doc__
+        assert template_python.mcp_server.__doc__ is not None
+        assert "MCP" in template_python.mcp_server.__doc__
+        assert "template" in template_python.mcp_server.__doc__
 
     def test_module_can_be_imported_without_errors(self):
         """Test that the module imports cleanly."""
         try:
-            import template_python.mcp_server
-
             # Should import without any errors
             assert template_python.mcp_server is not None
-        except Exception as e:
+        except ImportError as e:
             pytest.fail(f"Module import failed: {e}")
 
     def test_module_provides_usage_guidance(self):
         """Test that the module provides clear usage guidance."""
-        import template_python.mcp_server as mcp_module
-
         # Check docstring provides guidance
-        docstring = mcp_module.__doc__
+        docstring = template_python.mcp_server.__doc__
         assert "Uncomment" in docstring
         assert "pyproject.toml" in docstring
         assert "make" in docstring or "mcp" in docstring

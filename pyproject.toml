@@ -80,6 +80,9 @@ ignore = [
     "PLW0603",  # Global statement usage (singleton pattern)
     "TRY300",   # Else after return (guard clause pattern)
     "COM812",   # Trailing comma missing (conflicts with formatter)
+    "ERA001",   # Found commented-out code (template needs examples)
+    "S603",     # subprocess call (needed for testing CLI functionality)  
+    "PLC0415",  # import at module level (tests may need local imports)
 ]
 
 [tool.pytest.ini_options]
