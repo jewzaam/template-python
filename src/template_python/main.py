@@ -8,6 +8,7 @@ Customize this file based on your project's needs.
 
 import argparse
 import logging
+import sys
 
 
 def setup_logging(level: str = "INFO") -> None:
@@ -44,8 +45,8 @@ def main(args: list[str] | None = None) -> int:
 
     if parsed_args.example:
         logger.info("Running example functionality...")
-        print("🎉 Hello from the Python Template Project!")
-        print("✨ This is an example - customize src/template_python/main.py")
+        logger.info("🎉 Hello from the Python Template Project!")
+        logger.info("✨ This is an example - customize src/template_python/main.py")
         return 0
 
     parser.print_help()
@@ -53,4 +54,4 @@ def main(args: list[str] | None = None) -> int:
 
 
 if __name__ == "__main__":
-    exit(main())
+    sys.exit(main())

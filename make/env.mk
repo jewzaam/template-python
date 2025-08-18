@@ -23,6 +23,7 @@ requirements: venv uv ## Install all dependencies (runtime)
 
 requirements-dev: venv uv requirements ## Install all dev dependencies
 	@$(VENV_UV) pip install -r requirements-dev.txt
+	@$(VENV_UV) pip install -e .
 	@echo "✅ All dev dependencies installed in $(VENV_DIR)"
 
 clean: ## Remove temporary and backup files
@@ -30,7 +31,7 @@ clean: ## Remove temporary and backup files
 	@find . -name "*.pyc" -delete 2>/dev/null || true
 	@find . -name "__pycache__" -type d -exec rm -rf {} + 2>/dev/null || true
 	# Test artifacts
-	@rm -rf .pytest_cache .coverage htmlcov .tox .coverage-percentage 2>/dev/null || true
+	@rm -rf .pytest_cache .coverage htmlcov .tox .coverage-percentage .mypy_cache .ruff_cache 2>/dev/null || true
 	# Build artifacts
 	@rm -rf dist build *.egg-info/ src/*.egg-info/ 2>/dev/null || true
 	# Python virtual environment (main one only)
