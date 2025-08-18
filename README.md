@@ -1,8 +1,8 @@
 <!-- Generated-by: Cursor (claude-4-sonnet) -->
 # Python Template Project
 
-[![Test](https://github.com/your-username/template-python/workflows/Test/badge.svg)](https://github.com/your-username/template-python/actions/workflows/test.yml)
-[![Coverage](https://github.com/your-username/template-python/workflows/Coverage%20Check/badge.svg)](https://github.com/your-username/template-python/actions/workflows/coverage.yml)
+[![Test](https://github.com/jewzaam/template-python/workflows/Test/badge.svg)](https://github.com/jewzaam/template-python/actions/workflows/test.yml)
+[![Coverage](https://github.com/jewzaam/template-python/workflows/Coverage%20Check/badge.svg)](https://github.com/jewzaam/template-python/actions/workflows/coverage.yml)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![Code style: ruff](https://img.shields.io/badge/code%20style-ruff-000000.svg)](https://github.com/astral-sh/ruff)
 
