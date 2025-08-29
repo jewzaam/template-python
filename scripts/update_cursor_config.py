@@ -20,7 +20,7 @@ def find_cursor_config_path() -> Path:
     
     # Common Cursor config locations
     possible_paths = [
-        home / ".cursor" / "mcp_settings.json",  # Linux/macOS
+        home / ".cursor" / "mcp.json",  # Linux/macOS
         home / "Library" / "Application Support" / "Cursor" / "User" / "mcp_settings.json",  # macOS
         home / "AppData" / "Roaming" / "Cursor" / "User" / "mcp_settings.json",  # Windows
     ]
