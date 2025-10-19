@@ -8,15 +8,15 @@ test: test-unit test-integration ## Run all tests (unit + integration)
 	@$(VENV_PYTHON) -m pytest tests/ -v $(ARGS)
 	@printf "$(GREEN)✅ All tests completed$(RESET)\n"
 
-test-unit: requirements-dev ## Run unit tests only
+test-unit: install-package ## Run unit tests only
 	@$(VENV_PYTHON) -m pytest tests/unit/ -v $(ARGS)
 	@printf "$(GREEN)✅ Unit tests completed$(RESET)\n"
 
-test-integration: requirements-dev ## Run integration tests only
+test-integration: install-package ## Run integration tests only
 	@$(VENV_PYTHON) -m pytest tests/integration/ -v $(ARGS)
 	@printf "$(GREEN)✅ Integration tests completed$(RESET)\n"
 
-coverage-report: requirements-dev ## Run tests with coverage report (no threshold check)
+coverage-report: install-package ## Run tests with coverage report (no threshold check)
 	@$(VENV_PYTHON) -m pytest tests/ --cov=src --cov-report=html --cov-report=term --cov-report=xml $(ARGS)
 	@$(VENV_PYTHON) -m coverage report | tail -1 | awk '{print $$4}' | sed 's/%//' > .coverage-percentage
 	@printf "$(GREEN)✅ Coverage report generated$(RESET)\n"
