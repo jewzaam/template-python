@@ -55,6 +55,39 @@ jobs:
           const threshold = process.env.THRESHOLD;
           const badgeColor = process.env.BADGE_COLOR;
           
+          // Fetch existing comments to check previous status
+          const comments = await github.rest.issues.listComments({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+          });
+          
+          // Look for previous coverage comment from this bot
+          const botComments = comments.data.filter(comment => 
+            comment.user.type === 'Bot' && 
+            comment.body.includes('Code Coverage Check')
+          );
+          
+          let previousStatus = null;
+          if (botComments.length > 0) {
+            // Get the most recent coverage comment
+            const lastComment = botComments[botComments.length - 1];
+            // Check if it was a failure
+            previousStatus = lastComment.body.includes('FAILED') ? 'failed' : 'passed';
+          }
+          
+          // Determine if we should post a comment:
+          // 1. Always comment if coverage failed
+          // 2. Comment if coverage passed AND it previously failed (recovery)
+          // 3. Don't comment if coverage passed and it wasn't previously failed
+          const shouldComment = status === 'failed' || 
+                                 (status === 'passed' && previousStatus === 'failed');
+          
+          if (!shouldComment) {
+            console.log('Coverage passed and no previous failure detected. Skipping comment.');
+            return;
+          }
+          
           const statusIcon = status === 'passed' ? '✅' : '❌';
           const statusText = status === 'passed' ? 'PASSED' : 'FAILED';
           
